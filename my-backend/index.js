@@ -12,6 +12,7 @@ import { OAuth2Client } from "google-auth-library";
 
 import Posts from "./postModel.js";
 import Users from "./userModel.js";
+import diffInMs from "./timesup.js";
 
 //App Config
 var app = express();
@@ -122,6 +123,16 @@ app.post("/api/google-login", async (req, res) => {
   }
 });
 
+const checkTime = (req, res, next) => {
+  if (diffInMs > 0) {
+    next();
+  } else {
+    res.status(401).json({
+      error: "You are not authenticated!",
+    });
+  }
+};
+
 const verify = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
@@ -158,7 +169,7 @@ app.get("/api/profile", verify, async (req, res) => {
   }
 });
 
-app.post("/api/userVoting", verify, async (req, res) => {
+app.post("/api/userVoting", [checkTime, verify], async (req, res) => {
   const { postId } = req.body;
 
   console.log("VOOTING", postId);
@@ -185,7 +196,7 @@ app.post("/api/userVoting", verify, async (req, res) => {
   }
 });
 
-app.post("/api/userUnVoting", verify, async (req, res) => {
+app.post("/api/userUnVoting", [checkTime, verify], async (req, res) => {
   const { postId } = req.body;
 
   console.log("UNVOOTING", postId);
