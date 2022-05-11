@@ -6,8 +6,10 @@ var dateInPast = function (firstDate, secondDate) {
   return 1;
 };
 
-var past = new Date(process.env.TIMEUP);
+var past = new Date(process.env.REACT_APP_TIMESUP);
 var today = new Date();
 const diffInMs = dateInPast(past, today);
 
 export default diffInMs;
+
+

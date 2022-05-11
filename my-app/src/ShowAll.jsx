@@ -3,8 +3,14 @@ import {
     Figure,
 } from "react-bootstrap";
 import CardItem from './CardItem';
+import diffInMs from './timesup';
 
 export default function ShowAll({ posts, handleDetail, handleVote, vote, handleUnVote }) {
+
+    const changeButton = (button) => {
+        return diffInMs > 0 ? button : `Locked`;
+    }
+
 
     return (
         <>
@@ -52,13 +58,13 @@ export default function ShowAll({ posts, handleDetail, handleVote, vote, handleU
                                                 <button
                                                     className="nft-bidvoted" onClick={() => {
                                                         handleUnVote(post.id)
-                                                    }}>Unvote</button>) :
+                                                    }}>{changeButton("Unvote")}</button>) :
                                                 (
                                                     <button
                                                         className="nft-bid"
                                                         onClick={() => {
                                                             handleVote(post.id)
-                                                        }}>Vote</button>)
+                                                        }}>{changeButton("Vote")}</button>)
                                             }
                                         </div>
                                     </div>

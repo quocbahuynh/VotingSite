@@ -32,23 +32,13 @@ export default function Nav({ dataSearch, loginStatus, showLogin, name, setLogin
                         <div className="header__actions">
                             {
                                 loginStatus ?
-                                    (<>
-                                        <div className="header__action header__action--search">
-                                            <button className="header__action-btn" type="button"><i className="icofont-search-1" /></button>
-                                        </div>
-
-                                        <div className="header__action header__action--profile">
-                                            <Dropdown>
-                                                <Dropdown.Toggle className="dropdown">
-                                                    <span>
-                                                        <i className="icofont-user" /></span> <span className="d-none d-md-inline">{name}</span>
-                                                </Dropdown.Toggle>
-
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                        </div>
+                                    (<><div className="header__action header__action--profile">
+                                        <Dropdown>
+                                            <Dropdown.Toggle className="dropdown" onClick={handleLogout}>
+                                                Logout <i className="icofont-logout"></i>
+                                            </Dropdown.Toggle>
+                                        </Dropdown>
+                                    </div>
                                     </>
                                     ) : (
                                         <Button variant="dark" onClick={() => showLogin(true)} >Login</Button>

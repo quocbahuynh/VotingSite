@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import Icofont from "react-icofont";
 import Footer from "./Footer";
 import ErrorFallback from "./ErrorFallback";
+import diffInMs from "./timesup";
 
 const Ranking = React.lazy(() => import("./Ranking"));
 
@@ -32,58 +33,66 @@ function App() {
   const [showRule, setShowRule] = useState(false);
 
   const handleVote = async (itemid) => {
-    const data = {
-      postId: itemid,
-    };
-    if (login) {
-      // CHECK VOTED
-      const checkDuplicate = vote.includes(itemid);
-      const checkLength = vote.length < 3;
+    if (diffInMs > 0) {
+      const data = {
+        postId: itemid,
+      };
+      if (login) {
+        // CHECK VOTED
+        const checkDuplicate = vote.includes(itemid);
+        const checkLength = vote.length < 3;
 
-      if (!checkDuplicate && checkLength) {
-        localStorage.setItem("countDown", true);
-        setShowCountDown(true);
-        // VOTE
-        const submitVote = await instance.post("/api/userVoting", data, {
-          withCredentials: true,
-          headers: {
-            authorization:
-              "Bearer " + localStorage.getItem("token_votebellclub"),
-          },
-        });
-        setVote([...vote, itemid]);
+        if (!checkDuplicate && checkLength) {
+          localStorage.setItem("countDown", true);
+          setShowCountDown(true);
+          // VOTE
+          const submitVote = await instance.post("/api/userVoting", data, {
+            withCredentials: true,
+            headers: {
+              authorization:
+                "Bearer " + localStorage.getItem("token_votebellclub"),
+            },
+          });
+          setVote([...vote, itemid]);
 
-        if (!submitVote.data.success) {
-          setVote(vote.filter((item) => item !== itemid));
-          alert("Thire is something wrong! Contact admin....");
+          if (!submitVote.data.success) {
+            setVote(vote.filter((item) => item !== itemid));
+            alert("Thire is something wrong! Contact admin....");
+          }
+        } else {
+          alert("You can vote only 3 times");
         }
       } else {
-        alert("You can vote only 3 times");
+        setModalShow(true);
       }
     } else {
-      setModalShow(true);
+      alert("Time is up!");
     }
   };
 
   const handleUnVote = async (itemid) => {
-    const data = {
-      postId: itemid,
-    };
+    if (diffInMs > 0) {
+      const data = {
+        postId: itemid,
+      };
 
-    localStorage.setItem("countDown", true);
-    setShowCountDown(true);
+      localStorage.setItem("countDown", true);
+      setShowCountDown(true);
 
-    const submitUnVote = await instance.post("/api/userUnVoting", data, {
-      withCredentials: true,
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("token_votebellclub"),
-      },
-    });
+      const submitUnVote = await instance.post("/api/userUnVoting", data, {
+        withCredentials: true,
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("token_votebellclub"),
+        },
+      });
 
-    if (submitUnVote.data.success) {
-      setVote(vote.filter((item) => item !== itemid));
+      if (submitUnVote.data.success) {
+        setVote(vote.filter((item) => item !== itemid));
+      } else {
+        alert("Thire is something wrong! Contact admin....");
+      }
     } else {
-      alert("Thire is something wrong! Contact admin....");
+      alert("Time is up!");
     }
   };
 

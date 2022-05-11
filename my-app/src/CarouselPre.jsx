@@ -1,22 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Figure } from 'react-bootstrap'
-import { useTimer } from "reactjs-countdown-hook";
 import { scroller } from 'react-scroll'
 
 export default function CarouselPre({ setShowRule }) {
+    const [days, setDays] = useState(0);
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
+    const [seconds, setSeconds] = useState(0);
 
-    let today = new Date();
-    const startDate = '2022-05-11';
-    const endDate = today;
-    const diffInMs = (new Date(startDate) - new Date(endDate)) / 1000;
+    let deadline = "May, 11, 2022";
 
+    const leading0 = (num) => {
+        return num < 10 ? "0" + num : num;
+    };
 
-    const {
-        seconds,
-        minutes,
-        hours,
-        days,
-    } = useTimer(diffInMs);
+    const getTimeUntil = (deadline) => {
+        const time = Date.parse(deadline) - Date.parse(new Date());
+        if (time < 0) {
+            setDays(0);
+            setHours(0);
+            setMinutes(0);
+            setSeconds(0);
+        } else {
+            setDays(Math.floor(time / (1000 * 60 * 60 * 24)));
+            setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+            setMinutes(Math.floor((time / 1000 / 60) % 60));
+            setSeconds(Math.floor((time / 1000) % 60));
+        }
+    };
+
+    useEffect(() => {
+        setInterval(() => getTimeUntil(deadline), 1000);
+
+        return () => getTimeUntil(deadline);
+    }, [deadline]);
 
     // Somewhere else, even another file
     const scrollToSection = () => {
@@ -78,16 +95,16 @@ export default function CarouselPre({ setShowRule }) {
                                                         <div className="item-details-countdown">
                                                             <ul className="item-countdown-list count-down" >
                                                                 <li>
-                                                                    <span className="days">{days}</span><span className="count-txt">Days</span>
+                                                                    <span className="days">{leading0(days)}</span><span className="count-txt">Days</span>
                                                                 </li>
                                                                 <li>
-                                                                    <span className="hours">{hours}</span><span className="count-txt">Hours</span>
+                                                                    <span className="hours">{leading0(hours)}</span><span className="count-txt">Hours</span>
                                                                 </li>
                                                                 <li>
-                                                                    <span className="minutes">{minutes}</span><span className="count-txt">Mins</span>
+                                                                    <span className="minutes">{leading0(minutes)}</span><span className="count-txt">Mins</span>
                                                                 </li>
                                                                 <li>
-                                                                    <span className="seconds">{Math.floor(seconds)}</span><span className="count-txt">Secs</span>
+                                                                    <span className="seconds">{seconds}</span><span className="count-txt">Secs</span>
                                                                 </li>
                                                             </ul>
                                                         </div>
