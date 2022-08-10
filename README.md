@@ -9,6 +9,8 @@ A website have been participated by more 3000 users who want to vote for their f
 
 **Server:** Node, Express
 
+**Tech:** Code-Splitting
+
 
 ## Demo
 
